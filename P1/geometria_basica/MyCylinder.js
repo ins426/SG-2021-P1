@@ -8,8 +8,10 @@ class MyCylinder extends THREE.Object3D {
     this.createGUI(gui,titleGui);
     
     // Un Mesh se compone de geometría y material
-    var cylinderGeom = new THREE.CylinderGeometry( this.guiControls.radiusTop, 0.5,1,10);
-    var cylinderMat = new THREE.MeshPhongMaterial({color: 0x33FFD7});
+    var cylinderGeom = new THREE.CylinderGeometry( this.guiControls.radiusTop, this.guiControls.radiusBottom,this.guiControls.height,this.guiControls.resolution);
+    var cylinderMat = new THREE.MeshNormalMaterial;
+    cylinderMat.flatShading = true;
+    cylinderMat.needsUpdate = true;
     
     // Ya podemos construir el Mesh
     this.cylinder = new THREE.Mesh (cylinderGeom, cylinderMat);
@@ -20,37 +22,37 @@ class MyCylinder extends THREE.Object3D {
   createGUI (gui,titleGui) {
     // Controles para la modificación de la geometría del cilindro
     this.guiControls = new function () {
-      this.radiusTop = 0.5;
-      
-      // Un botón para dejarlo todo en su posición inicial
-      // Cuando se pulse se ejecutará esta función.
-      this.reset = function () {
-        this.radiusTop = 0.5;
-      }
+      this.radiusTop = 1;
+      this.radiusBottom = 1;
+      this.height = 1.0;
+      this.resolution = 3;
     } 
     
     var that = this;
     // Se crea una sección para los controles del cilindro
     var folder = gui.addFolder (titleGui);
-    // Estas lineas son las que añaden los componentes de la interfaz
-    // Las tres cifras indican un valor mínimo, un máximo y el incremento
-    // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'radiusTop', 0.5, 5.0, 0.1).name ('Radio Superior : ').listen()
-    .onChange(function(radiusTop){
-      var cylinderGeom = new THREE.CylinderGeometry(that.guiControls.radiusTop,0.5,1,10);
-      that.cylinder.geometry = cylinderGeom;
-    });
+
+    folder.add (this.guiControls, 'radiusTop', 1, 5.0, 0.1).name ('Radio Superior: ').listen()
+    .onChange(function(radiusTop){that.changeGeometry();});
     
-    folder.add (this.guiControls, 'reset').name ('[ Reset ]');
+    folder.add(this.guiControls,'radiusBottom',1,5.0,0.1).name('Radio Inferior: ').listen()
+    .onChange(function(radiusBottom){that.changeGeometry();});
+
+    folder.add(this.guiControls,'height',1.0,5.0,0.1).name('Altura: ').listen();
+
+    folder.add(this.guiControls,'resolution',3,20,1).name('Resolución: ').listen()
+    .onChange(function(resolution){that.changeGeometry(); });
   }
   
   update () {
-    // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
-    // Primero, el escalado
-    // Segundo, la rotación en Z
-    // Después, la rotación en Y
-    // Luego, la rotación en X
-    // Y por último la traslación
+    this.scale.set(this.guiControls.radiusTop,this.guiControls.height,this.guiControls.radiusBottom);
+    this.cylinder.rotation.z += 0.02;
+    this.cylinder.rotation.y += 0.02;
+  }
+
+  changeGeometry(){
+    var cylinderGeom = new THREE.CylinderGeometry(this.guiControls.radiusTop,this.guiControls.radiusBottom,this.guiControls.height,this.guiControls.resolution);
+    this.cylinder.geometry = cylinderGeom;
   }
 }
 

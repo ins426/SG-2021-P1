@@ -8,6 +8,11 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 // Clases de mi proyecto
 
 import { MyCylinder } from './MyCylinder.js'
+import { MyTorus } from './MyTorus.js'
+import { MyBox } from './MyBox.js'
+import { MyCone } from './MyCone.js'
+import { MySphere } from './MySphere.js'
+import { MyIcosahedron } from './MyIcosahedron.js'
 
  
 /// La clase fachada del modelo
@@ -39,11 +44,59 @@ class MyScene extends THREE.Scene {
     this.add (this.axis);
     
     
-    // Por último creamos el modelo.
-    // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
-    // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new MyCylinder(this.gui, "Dimensiones del Cilindro");
-    this.add (this.model);
+    // Creación del cilindro y sus ejes
+    this.axis_cylinder = new THREE.AxesHelper(5);
+    this.axis_cylinder.position.y = 10;
+    this.add(this.axis_cylinder);
+
+    this.cylinder = new MyCylinder(this.gui, "Dimensiones del Cilindro");
+    this.axis_cylinder.add(this.cylinder);
+
+    // Creación del toro y sus ejes
+    this.axis_torus = new THREE.AxesHelper(5);
+    this.axis_torus.position.x = -10;
+    this.axis_torus.position.z = 10;
+    this.add(this.axis_torus);
+
+    this.torus = new MyTorus(this.gui, "Dimensiones del Toro");
+    this.axis_torus.add(this.torus);
+
+    // Creación del caja y sus ejes
+    this.axis_box = new THREE.AxesHelper(5);
+    this.axis_box.position.x = 10;
+    this.axis_box.position.z = 10;
+    this.add(this.axis_box);
+
+    this.box = new MyBox(this.gui, "Dimensiones de la Caja");
+    this.axis_box.add(this.box);
+
+    // Creación del cono y sus ejes
+    this.axis_cone = new THREE.AxesHelper(5);
+    this.axis_cone.position.x = 10;
+    this.axis_cone.position.y = 10;
+    this.axis_cone.position.z = 10;
+    this.add(this.axis_cone);
+    
+    this.cone = new MyCone(this.gui, "Dimensiones del Cono");
+    this.axis_cone.add(this.cone);
+
+    // Creación de la esfera y sus ejes
+    this.axis_sphere = new THREE.AxesHelper(5);
+    this.axis_sphere.position.x = -10;
+    this.axis_sphere.position.y = 10;
+    this.axis_sphere.position.z = 10;
+    this.add(this.axis_sphere);
+    
+    this.sphere = new MySphere(this.gui, "Dimensiones de la Esfera");
+    this.axis_sphere.add(this.sphere);
+
+    // Creación del icosaedro y sus ejes
+    this.axis_icosahedron = new THREE.AxesHelper(5);
+    this.axis_icosahedron.position.y = -10;
+    this.add(this.axis_icosahedron);
+    
+    this.icosahedron = new MyIcosahedron(this.gui, "Dimensiones del Icosaedro");
+    this.axis_icosahedron.add(this.icosahedron);
   }
   
   createCamera () {
@@ -165,7 +218,12 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.model.update();
+    this.cylinder.update();
+    this.torus.update();
+    this.box.update();
+    this.cone.update();
+    this.sphere.update();
+    this.icosahedron.update();
     
     // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
     this.renderer.render (this, this.getCamera());

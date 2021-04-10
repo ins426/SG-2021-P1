@@ -7,7 +7,12 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 
-import { Grapadora } from './Grapadora.js'
+import { MyDiamond } from './MyDiamond.js'
+import { MySpade } from './MySpade.js'
+import { MyClover } from './MyClover.js'
+import { MyHeart } from './MyHeart.js'
+import { DiamondBarrido } from './DiamondBarrido.js'
+import { HeartBarrido } from './HeartBarrido.js'
 
  
 /// La clase fachada del modelo
@@ -16,15 +21,13 @@ import { Grapadora } from './Grapadora.js'
  */
 
 class MyScene extends THREE.Scene {
-  // Recibe el  div  que se ha creado en el  html  que va a ser el lienzo en el que mostrar
-  // la visualización de la escena
-  constructor (myCanvas) { 
+  constructor (myCanvas) {
     super();
     
     // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
     this.renderer = this.createRenderer(myCanvas);
     
-    // Se crea la interfaz gráfica de usuario
+    // Se añade a la gui los controles para manipular los elementos de esta clase
     this.gui = this.createGUI ();
     
     // Construimos los distinos elementos que tendremos en la escena
@@ -37,7 +40,7 @@ class MyScene extends THREE.Scene {
     this.createCamera ();
     
     // Un suelo 
-    this.createGround ();
+   // this.createGround ();
     
     // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
     this.axis = new THREE.AxesHelper (5);
@@ -47,18 +50,40 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Grapadora(this.gui, "Controles de la Grapadora");
-    this.add (this.model);
+  
+    this.diamond = new MyDiamond();
+    this.diamond.position.y = 10;
+    this.add (this.diamond);
+
+    this.spade = new MySpade();
+    this.spade.position.y = -10;
+    this.add(this.spade);
+
+    this.clover = new MyClover();
+    this.clover.position.x = 10;
+    this.add(this.clover);
+
+    this.heart = new MyHeart();
+    this.heart.position.x = -10
+    this.add(this.heart);
+
+    this.diamondBarrido = new DiamondBarrido();
+    this.diamondBarrido.position.x = 20;
+    this.add(this.diamondBarrido);
+
+    this.heartBarrido = new HeartBarrido();
+    this.heartBarrido.position.x = -20;
+    this.add(this.heartBarrido);
   }
   
   createCamera () {
     // Para crear una cámara le indicamos
-    //   El ángulo del campo de visión vértical en grados sexagesimales
+    //   El ángulo del campo de visión en grados sexagesimales
     //   La razón de aspecto ancho/alto
     //   Los planos de recorte cercano y lejano
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // También se indica dónde se coloca
-    this.camera.position.set (6, 3, 6);
+    this.camera.position.set (20, 10, 20);
     // Y hacia dónde mira
     var look = new THREE.Vector3 (0,0,0);
     this.camera.lookAt(look);
@@ -66,7 +91,6 @@ class MyScene extends THREE.Scene {
     
     // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
     this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
-    
     // Se configuran las velocidades de los movimientos
     this.cameraControl.rotateSpeed = 5;
     this.cameraControl.zoomSpeed = -2;
@@ -107,6 +131,7 @@ class MyScene extends THREE.Scene {
       // En el contexto de una función   this   alude a la función
       this.lightIntensity = 0.5;
       this.axisOnOff = true;
+      this.animation = false;
     }
 
     // Se crea una sección para los controles de esta clase
@@ -117,6 +142,9 @@ class MyScene extends THREE.Scene {
     
     // Y otro para mostrar u ocultar los ejes
     folder.add (this.guiControls, 'axisOnOff').name ('Mostrar ejes : ');
+
+    var folder2 = gui.addFolder ('Animación');
+    folder2.add(this.guiControls,'animation').name('Animación');
     
     return gui;
   }
@@ -170,7 +198,7 @@ class MyScene extends THREE.Scene {
     // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
     this.camera.updateProjectionMatrix();
   }
-    
+  
   onWindowResize () {
     // Este método es llamado cada vez que el usuario modifica el tamapo de la ventana de la aplicación
     // Hay que actualizar el ratio de aspecto de la cámara
@@ -181,9 +209,6 @@ class MyScene extends THREE.Scene {
   }
 
   update () {
-    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
-    this.renderer.render (this, this.getCamera());
-
     // Se actualizan los elementos de la escena para cada frame
     // Se actualiza la intensidad de la luz con lo que haya indicado el usuario en la gui
     this.spotLight.intensity = this.guiControls.lightIntensity;
@@ -193,17 +218,27 @@ class MyScene extends THREE.Scene {
     
     // Se actualiza la posición de la cámara según su controlador
     this.cameraControl.update();
+
+    if(this.guiControls.animation){
+      this.heart.update();
+      this.diamondBarrido.update();
+      this.clover.update();
+      this.heartBarrido.update();
+      this.spade.update();
+      this.diamond.update();
+    }
     
     // Se actualiza el resto del modelo
-    this.model.update();
     
+    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
+    this.renderer.render (this, this.getCamera());
+
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
     // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
     requestAnimationFrame(() => this.update())
   }
 }
-
 
 /// La función   main
 $(function () {

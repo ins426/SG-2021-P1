@@ -10,7 +10,10 @@ class MyPendulo extends THREE.Object3D {
     this.pendulo1 = this.createPendulo1();
     this.pendulo2 = this.createPendulo2();
 
+    this.pendulo2.position.z = 1;
+    
     this.add(this.pendulo1);
+    this.add(this.pendulo2);
   }
 
   createPendulo1(){
@@ -68,13 +71,14 @@ class MyPendulo extends THREE.Object3D {
     var material1 =  new THREE.MeshPhongMaterial({color: 0x0000ff });
     this.pendulo = new THREE.Mesh(pendulo,material1);
 
+    this.pendulo.position.y = 2;
+
     //Eje del péndulo 2
-    var octogono = new THREE.CylinderGeometry(1,1,0.5,8);
+    var octogono = new THREE.CylinderGeometry(0.5,0.5,0.5,8);
     var material2 =  new THREE.MeshPhongMaterial({color: 0xCF0000 });
     var eje =  new THREE.Mesh(octogono,material2);
 
     eje.rotation.x = Math.PI/2 ;
-    eje.position.y = -2.5;
     eje.position.z = 0.75;
   
     pendulo2.add(this.pendulo);
@@ -89,6 +93,7 @@ class MyPendulo extends THREE.Object3D {
        this.tamanioP1 = 5;
        this.rotacionP2 = 0;
        this.tamanioP2 = 10;
+       this.posicionP2 = 10;
    }
 
   //Controles péndulo 1
@@ -99,17 +104,21 @@ class MyPendulo extends THREE.Object3D {
    //Controles péndulo 2
    var folder2 = gui.addFolder('Segundo péndulo ');
    folder2.add(this.guiControls,'rotacionP2',-0.8,0.8,0.1).name("Giro: ");
+   folder2.add(this.guiControls,'posicionP2',10,90,10).name("Posicion(%): ")
    folder2.add(this.guiControls,'tamanioP2',10,20,1).name("Longitud: ");
   }
 
   update(){
-      this.pendulo2.rotation.z = this.guiControls.rotacionP2;
-      this.pendulo.scale.y = this.guiControls.tamanioP2/this.longitud2;
+    //La transformaciones sobre variables como pendulo(Mesh), afectan a sus geometrías
+    //Las transformaciones sobre variables como pendulo2 (Object3D), afectan a ese objeto
+    this.rotation.z = this.guiControls.rotacionP1;
+    this.parte_central.scale.y = this.guiControls.tamanioP1/this.longitud1;
+    this.extremo_inferior.position.y = -5*(this.guiControls.tamanioP1/this.longitud1);
 
-      this.pendulo1.rotation.z = this.guiControls.rotacionP1;
-      this.parte_central.scale.y = this.guiControls.tamanioP1/this.longitud1;
+    this.pendulo2.rotation.z = this.guiControls.rotacionP2;
+    this.pendulo.scale.y = this.guiControls.tamanioP2/this.longitud2;
+    this.pendulo2.position.y = -3-(this.guiControls.posicionP2 * this.guiControls.tamanioP1)/100;
 
-      this.extremo_inferior.position.y = -5*(this.guiControls.tamanioP1/this.longitud1);
   }
 }
 

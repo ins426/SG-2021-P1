@@ -1,5 +1,5 @@
 import * as THREE from '../libs/three.module.js'
- 
+ //python -m http.server
 class MyBox extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();

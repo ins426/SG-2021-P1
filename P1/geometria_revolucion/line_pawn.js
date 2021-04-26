@@ -10,8 +10,6 @@ class LinePawn extends THREE.Object3D {
     this.setPoints();
 
     var pawnMat = new THREE.MeshNormalMaterial();
-    pawnMat.flatShading = true;
-    pawnMat.needsUpdate = true;
     var pawnGeo = new THREE.LatheGeometry(this.points,this.guiControls.resolution,0,this.guiControls.angle);
     this.pawn = new THREE.Mesh(pawnGeo,pawnMat);
   
@@ -56,9 +54,6 @@ class LinePawn extends THREE.Object3D {
      this.points.push(new THREE.Vector3(0.55, 1.0, 0.0));
      this.points.push(new THREE.Vector3(0.5, 1.2, 0.0));
      this.points.push(new THREE.Vector3(0.3, 1.4, 0.0));
-
-
-
   }
 }
 

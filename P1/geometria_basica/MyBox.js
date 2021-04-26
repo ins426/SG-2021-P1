@@ -16,9 +16,9 @@ class MyBox extends THREE.Object3D {
     boxMat.needsUpdate = true;
     
     // Ya podemos construir el Mesh
-    var box = new THREE.Mesh (boxGeom, boxMat);
+    this.box = new THREE.Mesh (boxGeom, boxMat);
     // Y añadirlo como hijo del Object3D (el this)
-    this.add (box);
+    this.add (this.box);
   
   }
   
@@ -50,8 +50,10 @@ class MyBox extends THREE.Object3D {
     this.guiControls.rotZ += 0.02;
     this.guiControls.rotY += 0.02;
 
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
-    this.rotation.set(this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
+    this.box.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    
+    this.box.rotation.y = this.guiControls.rotY;
+    this.box.rotation.z = this.guiControls.rotZ;
   }
 
 }

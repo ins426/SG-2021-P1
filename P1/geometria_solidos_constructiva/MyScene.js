@@ -51,8 +51,19 @@ class MyScene extends THREE.Scene {
     //this.add (this.model);
 
         
-    this.model = new MyTriangle(this.gui, "Controles de la Caja");
-    this.add (this.model);
+    this.axis_cup = new THREE.AxesHelper(5);
+    this.axis_cup.position.x = -10;
+    this.add(this.axis_cup);
+
+    this.cup = new MyCup(this.gui, "Controles de la Taza");
+    this.axis_cup.add(this.cup);
+
+    this.axis_triangle = new THREE.AxesHelper(5);
+    this.axis_triangle.position.x = 10;
+    this.add(this.axis_triangle);
+
+    this.triangle = new MyTriangle(this.gui, "Controles de la Escuadra");
+    this.add (this.triangle);
   }
   
   createCamera () {

@@ -7,8 +7,10 @@ import { TrackballControls } from '../libs/TrackballControls.js'
 
 // Clases de mi proyecto
 
-import { Flexo } from './flexo.js'
-
+import { ExamenT } from './examenT.js'
+import { recorridoCorazon } from './recorridoCorazon.js'
+import { Pelota } from './pelota.js'
+import { Grua } from './grua.js'
  
 /// La clase fachada del modelo
 /**
@@ -47,8 +49,18 @@ class MyScene extends THREE.Scene {
     // Por último creamos el modelo.
     // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
     // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-    this.model = new Flexo(this.gui, "Controles del Reloj");
-    this.add (this.model);
+    
+    // this.examenT = new ExamenT(this.gui, "Controles del ExamenT");
+    // this.add (this.examenT);
+
+    // this.recorridoCorazon = new recorridoCorazon(this.gui, "Controles recorrido corazón");
+    // this.add(this.recorridoCorazon);
+
+    // this.pelota = new Pelota(this.gui, "Controles de la Pelota");
+    // this.add(this.pelota);
+
+    this.grua = new Grua(this.gui, "Controles de la Pelota");
+    this.add(this.grua);
   }
   
   createCamera () {
@@ -195,7 +207,11 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
     
     // Se actualiza el resto del modelo
-    this.model.update();
+    
+    //this.examenT.update();
+   // this.recorridoCorazon.update();
+  //  this.pelota.update();
+  this.grua.update();
     
     // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
     // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
